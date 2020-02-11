@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import {
   Text,
   StyleSheet,
-  ActivityIndicator
+  ActivityIndicator,
+  Slider
 } from 'react-native';
 import Video from 'react-native-video';
-import Orientation from 'react-native-orientation-locker';
 
 import PlayerLayout from '../components/player_layout';
 import ControlsLayout from '../components/control_layout';
@@ -17,18 +17,20 @@ class Player extends Component {
     loading: true,
     paused: false,
     fullScreen: false,
-    currentTime: '00:00:00'
+    currentTime: '00:00:00',
+    duration: 0
   }
-  onLoad = () => {
+  onLoad = (data: onLoadData) => {
     this.setState({
       loading: false,
+      duration: data.duration,
+      currentTime: data.currentTime
     })
 
   }
   onProgress = ({ currentTime }) => {
-    console.log(Math.floor(currentTime))
     this.setState({
-      currentTime: this.getTimeElapsed(Math.floor(currentTime))
+      currentTime: currentTime
     })
   }
   onBuffer = ({ isBuffering }) => {
@@ -41,6 +43,14 @@ class Player extends Component {
       paused: !this.state.paused
     })
   }
+  onSlideCapture = (data: onSeekData) => {
+    this.setState({
+      currentTime: data.seekTime
+    });
+  }
+  handleOnSlide = ({ time }) => {
+    onSlideCapture({seekTime: time})
+  }
   onFullScreen = () => {
     this.setState({
       fullScreen: !this.state.fullScreen
@@ -50,9 +60,17 @@ class Player extends Component {
       : this.player.dismissFullscreenPlayer()
   }
   getTimeElapsed = (seconds) => {
-    elapsedTime = new Date();
+    elapsedTime = new Date(null);
     elapsedTime.setSeconds(seconds);
     return elapsedTime.toISOString().substr(11, 8);
+  }
+  getMinutesFromSeconds(time: number) {
+    const minutes = time >= 60 ? Math.floor(time / 60) : 0;
+    const seconds = Math.floor(time - minutes * 60);
+
+    return `${minutes >= 10 ? minutes : '0' + minutes}:${
+      seconds >= 10 ? seconds : '0' + seconds
+    }`;
   }
   render() {
     return (
@@ -84,8 +102,19 @@ class Player extends Component {
               onPress={this.onPlayPause}
               paused={this.state.paused}
             />
-            <Text>progress bar | </Text>
-            <Text>{this.state.currentTime} | </Text>
+            <Text>{this.getTimeElapsed(Math.floor(this.state.currentTime))} | </Text>
+            <Slider
+              value={this.state.currentTime}
+              minimumValue={0}
+              maximumValue={this.state.duration}
+              step={1}
+              onValueChange={this.handleOnSlide}
+              onSlidingStart={this.onSlideStart}
+              onSlidingComplete={this.onSlideComplete}
+              minimumTrackTintColor={'#F44336'}
+              maximumTrackTintColor={'#FFFFFF'}
+              thumbTintColor={'#F44336'}
+            />
             <FullScreenButton
               onPress={this.onFullScreen}
               fullScreen={this.state.fullScreen}
