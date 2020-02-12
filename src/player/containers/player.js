@@ -3,9 +3,9 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  Slider
 } from 'react-native';
 import Video from 'react-native-video';
+import Slider from '@react-native-community/slider';
 
 import PlayerLayout from '../components/player_layout';
 import ControlsLayout from '../components/control_layout';
@@ -17,20 +17,23 @@ class Player extends Component {
     loading: true,
     paused: false,
     fullScreen: false,
-    currentTime: '00:00:00',
+    currentTime: 0,
+    currentTimeStr: '00:00:00',
     duration: 0
   }
   onLoad = (data: onLoadData) => {
     this.setState({
       loading: false,
       duration: data.duration,
-      currentTime: data.currentTime
+      currentTime: data.currentTime,
+      currentTimeStr: this.getTimeElapsed(data.currentTime)
     })
 
   }
   onProgress = ({ currentTime }) => {
     this.setState({
-      currentTime: currentTime
+      currentTime: currentTime,
+      currentTimeStr: this.getTimeElapsed(currentTime)
     })
   }
   onBuffer = ({ isBuffering }) => {
@@ -45,7 +48,8 @@ class Player extends Component {
   }
   onSlideCapture = (data: onSeekData) => {
     this.setState({
-      currentTime: data.seekTime
+      currentTime: data.seekTime,
+      currentTimeStr: this.getTimeElapsed(data.seekTime)
     });
   }
   handleOnSlide = ({ time }) => {
@@ -102,8 +106,8 @@ class Player extends Component {
               onPress={this.onPlayPause}
               paused={this.state.paused}
             />
-            <Text>{this.getTimeElapsed(Math.floor(this.state.currentTime))} | </Text>
-            <Slider
+            <Text>{this.currentTimeStr} | </Text>
+            <Slider style={{ width: 100 }}
               value={this.state.currentTime}
               minimumValue={0}
               maximumValue={this.state.duration}
