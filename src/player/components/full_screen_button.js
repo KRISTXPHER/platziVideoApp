@@ -10,6 +10,7 @@ import { Icon } from 'react-native-elements'
 function FullScreenButton(props) {
   return (
     <TouchableOpacity
+      style={styles.container}
       onPress={props.onPress}
       hitSlop={{
         left: 5,
@@ -24,7 +25,9 @@ function FullScreenButton(props) {
 }
 
 const styles = StyleSheet.create({
-
+  container: {
+    justifyContent: 'center'
+  }
 })
 
 export default FullScreenButton;

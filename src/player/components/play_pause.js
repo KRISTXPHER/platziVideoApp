@@ -13,6 +13,7 @@ import { Icon } from 'react-native-elements';
 function PlayPause(props) {
   return (
     <TouchableOpacity
+      style={styles.container}
       onPress={props.onPress}
       hitSlop={{
         left: 5,
@@ -32,19 +33,9 @@ function PlayPause(props) {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    paddingHorizontal: 10,
-    height: 25,
-    marginRight: 10,
-    marginVertical: 5,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: 'white',
-    backgroundColor: 'gray',
-  },
-  button: {
-    color: 'white',
-    fontSize: 10,
-    fontWeight: 'bold',
+    paddingHorizontal: 5,
+    marginRight: 5,
+    marginVertical: 5
   }
 });
 

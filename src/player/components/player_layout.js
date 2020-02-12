@@ -1,15 +1,14 @@
 import React from 'react';
 import {
   View,
-  StyleSheet
+  StyleSheet,
+  TouchableWithoutFeedback
 } from 'react-native';
 
 function PlayerLayout(props) {
   return (
-    <View style={styles.container}>
-      <View style={styles.video}>
-        {props.video}
-      </View>
+    <View style={props.isFullScreen && styles.fullScreen}>
+      {props.video}
       <View style={styles.overlay}>
         {
           props.loading && props.loader
@@ -21,16 +20,10 @@ function PlayerLayout(props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: '56.25%',
-  },
-  video: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'black'
+  fullScreen: {
+    transform: [
+      {translateY: -46}
+    ]
   },
   overlay: {
     position: 'absolute',

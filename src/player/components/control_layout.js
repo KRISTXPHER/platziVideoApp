@@ -19,8 +19,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    height: 35,
-    flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 10,
     alignItems: 'center'

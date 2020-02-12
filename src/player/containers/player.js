@@ -1,11 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import {
   Text,
   StyleSheet,
+  Dimensions,
   ActivityIndicator,
 } from 'react-native';
 import Video from 'react-native-video';
 import Slider from '@react-native-community/slider';
+import Orientation from 'react-native-orientation-locker';
 
 import PlayerLayout from '../components/player_layout';
 import ControlsLayout from '../components/control_layout';
@@ -13,6 +15,7 @@ import PlayPause from '../components/play_pause';
 import FullScreenButton from '../components/full_screen_button';
 
 class Player extends Component {
+  videoPlayer = React.createRef();
   state = {
     loading: true,
     paused: false,
@@ -28,7 +31,6 @@ class Player extends Component {
       currentTime: data.currentTime,
       currentTimeStr: this.getTimeElapsed(data.currentTime)
     })
-
   }
   onProgress = ({ currentTime }) => {
     this.setState({
@@ -46,22 +48,20 @@ class Player extends Component {
       paused: !this.state.paused
     })
   }
-  onSlideCapture = (data: onSeekData) => {
+  handleOnSlide = (seekTime) => {
+    this.videoPlayer.current.seek(seekTime);
     this.setState({
-      currentTime: data.seekTime,
-      currentTimeStr: this.getTimeElapsed(data.seekTime)
+      currentTime: seekTime,
+      currentTimeStr: this.getTimeElapsed(seekTime)
     });
   }
-  handleOnSlide = ({ time }) => {
-    onSlideCapture({seekTime: time})
-  }
   onFullScreen = () => {
+    this.state.fullScreen
+      ? Orientation.unlockAllOrientations()
+      : Orientation.lockToLandscapeLeft();
     this.setState({
       fullScreen: !this.state.fullScreen
     })
-    this.state.fullScreen
-      ? this.player.presentFullscreenPlayer()
-      : this.player.dismissFullscreenPlayer()
   }
   getTimeElapsed = (seconds) => {
     elapsedTime = new Date(null);
@@ -83,18 +83,13 @@ class Player extends Component {
         video={
           <Video
             source={{uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}}
-            ref = {(ref) => {
-              this.player = ref
-            }}
-            style={styles.video}
+            ref = {this.videoPlayer}
+            style={this.state.fullScreen ? styles.fullscreenVideo : styles.video}
             resizeMode='contain'
             onBuffer={this.onBuffer}
             onLoad={this.onLoad}
             onProgress={this.onProgress}
             paused={this.state.paused}
-            fullscreen={this.state.fullScreen}
-            fullscreenAutorotate={false}
-            fullscreenOrientation='landscape'
           />
         }
         loader={
@@ -106,39 +101,39 @@ class Player extends Component {
               onPress={this.onPlayPause}
               paused={this.state.paused}
             />
-            <Text>{this.currentTimeStr} | </Text>
-            <Slider style={{ width: 100 }}
+            <Slider style={{ flex: 1 }}
               value={this.state.currentTime}
               minimumValue={0}
               maximumValue={this.state.duration}
               step={1}
               onValueChange={this.handleOnSlide}
-              onSlidingStart={this.onSlideStart}
-              onSlidingComplete={this.onSlideComplete}
               minimumTrackTintColor={'#F44336'}
               maximumTrackTintColor={'#FFFFFF'}
               thumbTintColor={'#F44336'}
             />
+            <Text style={{width: 80, textAlign: 'center', fontFamily: 'Helvetica Neue'}}>{this.state.currentTimeStr}</Text>
             <FullScreenButton
               onPress={this.onFullScreen}
               fullScreen={this.state.fullScreen}
             />
           </ControlsLayout>
         }
-      >
-      </PlayerLayout>
+        isFullScreen={this.state.fullScreen} />
     );
   }
 }
 
 const styles = StyleSheet.create({
   video: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: 0
-  }
+    backgroundColor: 'black',
+    height: Dimensions.get('window').width * (9 / 16),
+    width: Dimensions.get('window').width,
+  },
+  fullscreenVideo: {
+    height: Dimensions.get('window').width,
+    width: Dimensions.get('window').height,
+    backgroundColor: 'black',
+  },
 });
 
 export default Player;

@@ -2,14 +2,22 @@ import React, {Component} from 'react';
 import {
   FlatList
 } from 'react-native';
+import { connect } from 'react-redux';
+
 import Empty from '../components/empty';
 import Separator from '../../sections/components/horizontal_separator';
 import Category from '../components/category';
 import CategoriesLayout from '../components/categories_list_layout';
 
+function mapStateToProps(state) {
+  return {
+    list: state.categoriesList
+  }
+}
+
 class CategoriesList extends Component {
   keyExtractor = item => item.id.toString();
-  renderEmpty = () => <Empty text='No hay categorias'/>
+  renderEmpty = () => <Empty text='There are no categories'/>
   itemSeparator = () => <Separator />
   renderItem = ({item}) => {
     return (
@@ -18,7 +26,7 @@ class CategoriesList extends Component {
   }
   render() {
     return (
-      <CategoriesLayout title='Categorías'>
+      <CategoriesLayout title='Categories'>
         <FlatList
         horizontal
         keyExtractor={this.keyExtractor}
@@ -32,4 +40,4 @@ class CategoriesList extends Component {
   }
 }
 
-export default CategoriesList;
+export default connect(mapStateToProps)(CategoriesList);
