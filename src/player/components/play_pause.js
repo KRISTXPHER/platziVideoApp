@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
+import { createPropertySignature } from 'typescript';
 
 function PlayPause(props) {
   return (
@@ -22,20 +23,24 @@ function PlayPause(props) {
         right: 5
       }}
     >
-      <Icon
-        name={
-          props.paused ? 'play-arrow' : 'pause'
-        } />
+    <Icon
+      color={props.color}
+      name={
+        props.paused ? 'play-arrow' : 'pause'
+      }
+      size={50} />
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    paddingHorizontal: 5,
-    marginRight: 5,
-    marginVertical: 5
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    marginLeft: -25,
+    marginTop: -25,
+    justifyContent: 'center'
   }
 });
 

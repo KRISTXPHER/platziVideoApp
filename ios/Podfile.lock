@@ -191,6 +191,8 @@ PODS:
     - react-native-video/Video (= 5.0.2)
   - react-native-video/Video (5.0.2):
     - React
+  - react-native-webview (8.1.0):
+    - React
   - React-RCTActionSheet (0.61.5):
     - React-Core/RCTActionSheetHeaders (= 0.61.5)
   - React-RCTAnimation (0.61.5):
@@ -252,6 +254,7 @@ DEPENDENCIES:
   - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-video (from `../node_modules/react-native-video`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -306,6 +309,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/slider"
   react-native-video:
     :path: "../node_modules/react-native-video"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -350,8 +355,9 @@ SPEC CHECKSUMS:
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-orientation-locker: f0ca1a8e5031dab6b74bfb4ab33a17ed2c2fcb0d
-  react-native-slider: 3a1cfd00c9c31068251b536822f7192e8d1d6b6f
-  react-native-video: d01ed7ff1e38fa7dcc6c15c94cf505e661b7bfd0
+  react-native-slider: b2f361499888302147205f17f6fffa921a7bda70
+  react-native-video: 961749da457e73bf0b5565edfbaffc25abfb8974
+  react-native-webview: f686ed60541ed7291cb1c2aad56b96c86352cb87
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -362,7 +368,7 @@ SPEC CHECKSUMS:
   React-RCTText: 9ccc88273e9a3aacff5094d2175a605efa854dbe
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
-  RNCAsyncStorage: 44395cb9c7c1523104c2b499eb426ef7aff82bca
+  RNCAsyncStorage: 8539fc80a0075fcc9c8e2dff84cd22dc5bf1dacf
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 

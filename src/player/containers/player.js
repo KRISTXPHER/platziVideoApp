@@ -4,8 +4,9 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
-  TouchableWithoutFeedback,
   TouchableOpacity,
+  View,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Video from 'react-native-video';
 import Slider from '@react-native-community/slider';
@@ -16,47 +17,23 @@ import PlayerLayout from '../components/player_layout';
 import ControlsLayout from '../components/control_layout';
 import PlayPause from '../components/play_pause';
 import FullScreenButton from '../components/full_screen_button';
+import ExitButton from '../components/exit_button';
 
 class Player extends Component {
   constructor(props) {
     super(props);
 
-    this.timeHandler = 0;
-    this._isMounted = false;
+    this.videoPlayer = React.createRef();
+    this.playerLayout = React.createRef();
   }
-  componentDidMount() {
-    this._isMounted = true;
-  }
-  componentWillUnmount() {
-    this._isMounted = false;
-    
-    if (this.timeHandler) {
-      clearTimeout(this.timeHandler);
-      this.timeHandler = 0;
-    }
-  }
-  videoPlayer = React.createRef();
+  
   state = {
     loading: true,
     paused: false,
     fullScreen: false,
     currentTime: 0,
     currentTimeStr: '00:00:00',
-    duration: 0,
-    showControls: false
-  }
-  onTapVideo = () => {
-    if (this._isMounted)
-      this.setState({
-        showControls: !this.state.showControls
-      })
-    
-    if (!this.state.showControls)
-      this.timeHandler = setTimeout(() => {
-        this.setState({
-          showControls: false
-        })
-      }, 2500);
+    duration: 0
   }
   onLoad = (data: onLoadData) => {
     this.setState({
@@ -80,6 +57,8 @@ class Player extends Component {
   onPlayPause = () => {
     this.setState({
       paused: !this.state.paused
+    }, () => {
+      this.playerLayout.current.onPlayPause(this.state.paused);
     })
   }
   handleOnSlide = (seekTime) => {
@@ -113,64 +92,50 @@ class Player extends Component {
   render() {
     return (
       <PlayerLayout
+        ref = {this.playerLayout}
         loading={this.state.loading}
-        back={
-          <TouchableOpacity
-            style={styles.exitVideo}
-            onPress={this.props.onExit}
-            hitSlop={{
-              left: 5,
-              top: 5,
-              bottom: 5,
-              right: 5
-            }} >
-            <Icon
-              name='close'
-              size={40} />
-          </TouchableOpacity>
-        }
         video={
-          <TouchableWithoutFeedback
-            onPress={this.onTapVideo}>
-            <Video
-              source={{uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}}
-              ref = {this.videoPlayer}
-              style={this.state.fullScreen ? styles.fullscreenVideo : styles.video}
-              resizeMode='contain'
-              onBuffer={this.onBuffer}
-              onLoad={this.onLoad}
-              onProgress={this.onProgress}
-              paused={this.state.paused}
-            />
-          </TouchableWithoutFeedback>
+          <Video
+            source={{uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}}
+            ref = {this.videoPlayer}
+            style={this.state.fullScreen ? styles.fullscreenVideo : styles.video}
+            resizeMode='contain'
+            onBuffer={this.onBuffer}
+            onLoad={this.onLoad}
+            onProgress={this.onProgress}
+            paused={this.state.paused} />
         }
         loader={
-          <ActivityIndicator color='red'/>
+          <ActivityIndicator color='red' size={50}/>
         }
         controls={
           <ControlsLayout>
+            <ExitButton
+              color='white'
+              onPress={this.props.onExit} />
             <PlayPause
-              onPress={this.onPlayPause}
-              paused={this.state.paused}
-            />
-            <Slider style={{ flex: 1 }}
-              value={this.state.currentTime}
-              minimumValue={0}
-              maximumValue={this.state.duration}
-              step={1}
-              onValueChange={this.handleOnSlide}
-              minimumTrackTintColor={'#F44336'}
-              maximumTrackTintColor={'#FFFFFF'}
-              thumbTintColor={'#F44336'}
-            />
-            <Text style={{width: 80, textAlign: 'center', fontFamily: 'Helvetica Neue'}}>{this.state.currentTimeStr}</Text>
-            <FullScreenButton
-              onPress={this.onFullScreen}
-              fullScreen={this.state.fullScreen}
-            />
+                color='white'
+                onPress={this.onPlayPause}
+                paused={this.state.paused} />
+            <View style={styles.bottomControls}>
+              <Slider style={styles.slider}
+                value={this.state.currentTime}
+                minimumValue={0}
+                maximumValue={this.state.duration}
+                step={1}
+                onValueChange={this.handleOnSlide}
+                minimumTrackTintColor={'#F44336'}
+                maximumTrackTintColor={'#FFFFFF'}
+                thumbTintColor={'#F44336'} />
+              <Text style={styles.timeElapsed}>{this.state.currentTimeStr}</Text>
+              <FullScreenButton
+                color='white'
+                onPress={this.onFullScreen}
+                fullScreen={this.state.fullScreen}
+              />
+            </View>
           </ControlsLayout>
         }
-        showControls={this.state.showControls}
         isFullScreen={this.state.fullScreen} />
     );
   }
@@ -182,17 +147,31 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').width * (9 / 16),
     width: Dimensions.get('window').width,
   },
+  slider: {
+    flex: 1
+  },
   fullscreenVideo: {
+    transform: [
+      {translateX: -44}
+    ],
     height: Dimensions.get('window').width,
     width: Dimensions.get('window').height,
     backgroundColor: 'black',
   },
-  exitVideo: {
-    backgroundColor: 'rgba(255,255,255,.3)',
+  bottomControls: {
     position: 'absolute',
-    top: 0,
+    bottom: 0,
+    left: 0,
     right: 0,
-    padding: 10
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10
+  },
+  timeElapsed: {
+    color: 'white',
+    width: 80,
+    textAlign: 'center',
+    fontFamily: 'Helvetica Neue'
   }
 });
 

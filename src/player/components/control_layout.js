@@ -14,14 +14,12 @@ function ControlsLayout(props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(255,255,255,.3)',
+    backgroundColor: 'rgba(0,0,0,.3)',
     position: 'absolute',
     right: 0,
     bottom: 0,
     left: 0,
-    flexDirection: 'row',
-    paddingHorizontal: 10,
-    alignItems: 'center'
+    top: 0
   }
 });
 

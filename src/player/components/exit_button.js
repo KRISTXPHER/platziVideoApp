@@ -1,13 +1,10 @@
 import React from 'react';
-
 import {
-  TouchableOpacity,
-  StyleSheet
+  TouchableOpacity
 } from 'react-native';
+import { Icon } from 'react-native-elements';
 
-import { Icon } from 'react-native-elements'
-
-function FullScreenButton(props) {
+function exitButton(props) {
   return (
     <TouchableOpacity
       style={styles.container}
@@ -20,15 +17,19 @@ function FullScreenButton(props) {
       }} >
       <Icon
         color={props.color}
-        name = { props.fullScreen ? 'fullscreen-exit' : 'fullscreen'} />
+        name='close'
+        size={40} />
     </TouchableOpacity>
-  );
+  )
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
-    justifyContent: 'center'
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    padding: 10
   }
-})
+}
 
-export default FullScreenButton;
+export default exitButton;
