@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-  Text
+  Text,
+  StatusBar
 } from 'react-native';
 import Orientation from 'react-native-orientation-locker';
 import { connect } from 'react-redux';
@@ -10,7 +11,7 @@ import Home from './screens/containers/home';
 import Header from './sections/components/header';
 import SuggestionsList from './videos/containers/suggestions_list';
 import CategoriesList from './videos/containers/categories_list';
-import Player from './player/containers/player';
+import Movie from './screens/containers/movie';
 
 class AppLayout extends Component {
   handleOrientation = (orientation) => {
@@ -40,10 +41,12 @@ class AppLayout extends Component {
     Orientation.removeOrientationListener(this.handleOrientation);
   }
   render() {
+    if (this.props.selectedMovie) {
+      return <Movie />
+    }
     return (
       <Home>
         <Header />
-        <Player />
         <Text>Buscador</Text>
         <CategoriesList />
         <SuggestionsList />
@@ -52,4 +55,10 @@ class AppLayout extends Component {
   }
 }
 
-export default connect(null)(AppLayout);
+mapStateToProps = (state) => {
+  return {
+    selectedMovie: state.selectedMovie
+  }
+}
+
+export default connect(mapStateToProps)(AppLayout);

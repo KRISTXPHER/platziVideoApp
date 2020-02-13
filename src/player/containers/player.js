@@ -4,10 +4,13 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import Video from 'react-native-video';
 import Slider from '@react-native-community/slider';
 import Orientation from 'react-native-orientation-locker';
+import { Icon } from 'react-native-elements';
 
 import PlayerLayout from '../components/player_layout';
 import ControlsLayout from '../components/control_layout';
@@ -15,6 +18,23 @@ import PlayPause from '../components/play_pause';
 import FullScreenButton from '../components/full_screen_button';
 
 class Player extends Component {
+  constructor(props) {
+    super(props);
+
+    this.timeHandler = 0;
+    this._isMounted = false;
+  }
+  componentDidMount() {
+    this._isMounted = true;
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
+    
+    if (this.timeHandler) {
+      clearTimeout(this.timeHandler);
+      this.timeHandler = 0;
+    }
+  }
   videoPlayer = React.createRef();
   state = {
     loading: true,
@@ -22,7 +42,21 @@ class Player extends Component {
     fullScreen: false,
     currentTime: 0,
     currentTimeStr: '00:00:00',
-    duration: 0
+    duration: 0,
+    showControls: false
+  }
+  onTapVideo = () => {
+    if (this._isMounted)
+      this.setState({
+        showControls: !this.state.showControls
+      })
+    
+    if (!this.state.showControls)
+      this.timeHandler = setTimeout(() => {
+        this.setState({
+          showControls: false
+        })
+      }, 2500);
   }
   onLoad = (data: onLoadData) => {
     this.setState({
@@ -80,17 +114,35 @@ class Player extends Component {
     return (
       <PlayerLayout
         loading={this.state.loading}
+        back={
+          <TouchableOpacity
+            style={styles.exitVideo}
+            onPress={this.props.onExit}
+            hitSlop={{
+              left: 5,
+              top: 5,
+              bottom: 5,
+              right: 5
+            }} >
+            <Icon
+              name='close'
+              size={40} />
+          </TouchableOpacity>
+        }
         video={
-          <Video
-            source={{uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}}
-            ref = {this.videoPlayer}
-            style={this.state.fullScreen ? styles.fullscreenVideo : styles.video}
-            resizeMode='contain'
-            onBuffer={this.onBuffer}
-            onLoad={this.onLoad}
-            onProgress={this.onProgress}
-            paused={this.state.paused}
-          />
+          <TouchableWithoutFeedback
+            onPress={this.onTapVideo}>
+            <Video
+              source={{uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}}
+              ref = {this.videoPlayer}
+              style={this.state.fullScreen ? styles.fullscreenVideo : styles.video}
+              resizeMode='contain'
+              onBuffer={this.onBuffer}
+              onLoad={this.onLoad}
+              onProgress={this.onProgress}
+              paused={this.state.paused}
+            />
+          </TouchableWithoutFeedback>
         }
         loader={
           <ActivityIndicator color='red'/>
@@ -118,6 +170,7 @@ class Player extends Component {
             />
           </ControlsLayout>
         }
+        showControls={this.state.showControls}
         isFullScreen={this.state.fullScreen} />
     );
   }
@@ -134,6 +187,13 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').height,
     backgroundColor: 'black',
   },
+  exitVideo: {
+    backgroundColor: 'rgba(255,255,255,.3)',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    padding: 10
+  }
 });
 
 export default Player;

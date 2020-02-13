@@ -7,24 +7,18 @@ import {
 
 function PlayerLayout(props) {
   return (
-    <View style={props.isFullScreen && styles.fullScreen}>
-      {props.video}
+    <View>
+      { props.video }
+      { props.showControls && props.back }
       <View style={styles.overlay}>
-        {
-          props.loading && props.loader
-        }
+        { props.loading && props.loader }
       </View>
-      {props.controls}
+      { props.showControls && props.controls }
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  fullScreen: {
-    transform: [
-      {translateY: -46}
-    ]
-  },
   overlay: {
     position: 'absolute',
     left: 0,
